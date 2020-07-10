@@ -1,12 +1,12 @@
-var paperObject,ground;
+var paperObject,ground,dustbin1,dustbin2,dustbin3,launch,dustbinIMG;
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
-const Body = Matter.Body;
+
 
 function preload()
 {
-	
+	dustbinIMG = loadImage("dustbingreen.png");
 }
 
 function setup() {
@@ -14,40 +14,18 @@ function setup() {
 
 
 
-	groundSprite=createSprite(width/2, height-35, width,10);
-	groundSprite.shapeColor=color(255)
-
-
-    wall1 = createSprite(600,650,200,20);
-	wall1.shapeColor = "red";
-
-	wall2 = createSprite(500,610,20,100);
-	wall2.shapeColor = "red";
-
-	wall3 = createSprite(700,610,20,100);
-	wall3.shapeColor = "red";
-
-
-
 
 	engine = Engine.create();
 	world = engine.world;
 
-	//paperObject = Bodies.circle(width/2 , 200 , 5 , {restitution:1.5, isStatic:false});
-	//World.add(world, paperObject);
+	 ground = new Ground(400,680,800,20);
 
-
-	
-	
-
-	//Create a Ground
-	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
-	 World.add(world, ground);
+	 dustbin2 = new Dustbin(570,670,150,10);
+	 dustbin1 = new Dustbin(500,620,10,90);
+	 dustbin3 = new Dustbin(640,620,10,90);
+	 paperObject = new Paper(85,600,25);
+	 launch= new Launcher(paperObject.body,{x:100,y:100})
 	 
-
-
-	 paperObject = new Paper(85,600,10);
-
 
 	Engine.run(engine);
   
@@ -56,12 +34,19 @@ function setup() {
 
 function draw() {
   rectMode(CENTER);
-  background(0);
+  background(255);
+  Engine.update(engine);
 
+  ground.display();
+  dustbin2.display();
+  dustbin1.display();
+  dustbin3.display();
   paperObject.display();
+  launch.display();
+  imageMode(CENTER);
+    image(dustbinIMG,570,620,130,90);
+
   
-  
-  drawSprites();
  
 }
 
@@ -72,5 +57,14 @@ function keyPressed() {
 	   
 	 }
    }
+   function mouseDragged(){
+    //if (gameState!=="launched"){
+        Matter.Body.setPosition(paperObject.body, {x: mouseX , y: mouseY});
+    //}
+}
 
+
+function mouseReleased(){
+    launch.fly();
+}
 
